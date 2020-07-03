@@ -10,3 +10,6 @@
 	path = meta-rockchip
 	url = https://git.yoctoproject.org/git/meta-rockchip
 	branch = master
+[submodule "meta-arm"]
+	path = meta-arm
+	url = https://git.yoctoproject.org/git/meta-arm

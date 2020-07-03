@@ -8,16 +8,32 @@ else
 	THIS_SCRIPT="$(pwd)/pyrex-init-build-env"
 fi
 
-THIS_DIR=$(readlink -f $(dirname $THIS_SCRIPT))
+export PROJECT_ROOT=$(readlink -f $(dirname $THIS_SCRIPT))
 
 if [ -z $PYREXCONFFILE ]; then
-    PYREXCONFFILE=$THIS_DIR/pyrex.ini
+    PYREXCONFFILE=$PROJECT_ROOT/pyrex.ini
 fi
 
-OEROOT=$THIS_DIR/poky
-PYREX_CONFIG_BIND=$THIS_DIR
+OEROOT=$PROJECT_ROOT/poky
+PYREX_CONFIG_BIND=$PROJECT_ROOT
 
-. $THIS_DIR/pyrex/pyrex-init-build-env
+export BB_ENV_EXTRAWHITE="\
+    $BB_ENV_EXTRAWHITE \
+    PROJECT_ROOT \
+    "
 
-unset THIS_DIR
+. $PROJECT_ROOT/pyrex/pyrex-init-build-env
+
+BUILD_DIR=$(pwd)
+
+configure() {
+    rm -f $BUILD_DIR/conf/site.conf
+    if [ -e $PROJECT_ROOT/conf/site/$SITE.conf ]; then
+        ln -sf $PROJECT_ROOT/conf/site/$SITE.conf $BUILD_DIR/conf/site.conf
+    fi
+
+    ln -sf $PROJECT_ROOT/conf/bblayers.conf $BUILD_DIR/conf/bblayers.conf
+}
+
+configure
 
