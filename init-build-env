@@ -1,0 +1,23 @@
+#! /bin/bash
+
+if [ -n "$BASH_SOURCE" ]; then
+	THIS_SCRIPT=$BASH_SOURCE
+elif [ -n "$ZSH_NAME" ]; then
+	THIS_SCRIPT=$0
+else
+	THIS_SCRIPT="$(pwd)/pyrex-init-build-env"
+fi
+
+THIS_DIR=$(readlink -f $(dirname $THIS_SCRIPT))
+
+if [ -z $PYREXCONFFILE ]; then
+    PYREXCONFFILE=$THIS_DIR/pyrex.ini
+fi
+
+OEROOT=$THIS_DIR/poky
+PYREX_CONFIG_BIND=$THIS_DIR
+
+. $THIS_DIR/pyrex/pyrex-init-build-env
+
+unset THIS_DIR
+

@@ -1,0 +1,12 @@
+[submodule "poky"]
+	path = poky
+	url = git://git.yoctoproject.org/poky
+	branch = master
+[submodule "pyrex"]
+	path = pyrex
+	url = https://github.com/garmin/pyrex.git
+	branch = master
+[submodule "meta-rockchip"]
+	path = meta-rockchip
+	url = https://git.yoctoproject.org/git/meta-rockchip
+	branch = master
