@@ -1,0 +1,57 @@
+version: 0.2
+
+batch:
+  build-graph:
+  - identifier: qemux86_64
+    env:
+      # compute-type: BUILD_GENERAL1_LARGE
+      # image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+      variables:
+        MACHINE: qemux86-64
+  - identifier: qemuarm64_secureboot
+    env:
+      variables:
+        MACHINE: qemuarm64-secureboot
+  - identifier: rock_pi_4
+    env:
+      variables:
+        MACHINE: rock-pi-4
+  - identifier: tinker_board
+    env:
+      variables:
+        MACHINE: tinker-board
+env:
+  shell: bash
+  variables:
+    SITE: aws
+    IMAGE: core-image-minimal
+    LANG: en_US.UTF-8
+
+    BB_ENV_EXTRAWHITE: MACHINE
+    MACHINE: qemux86-64
+    PYREX_BIND: /mnt/yocto-cache
+  exported-variables:
+    - BB_ENV_EXTRAWHITE
+    - MACHINE
+    - PYREX_BIND
+
+run-as: codebuild-user
+
+phases:
+  install:
+    run-as: root
+    commands:
+    - groupadd docker
+    - usermod -aG docker codebuild-user
+    - mkdir -p /root/.docker
+    - touch /root/.docker/config.json
+    - chown :docker /var/run/docker.sock /root/.docker/config.json
+    - chown codebuild-user:codebuild-user /mnt/yocto-cache
+  build:
+    commands:
+    - source ./init-build-env
+    - bitbake $IMAGE
+
+artifacts:
+  files:
+  - build/tmp/deploy/images/**/*
